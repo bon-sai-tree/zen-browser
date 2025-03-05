@@ -1,6 +1,7 @@
 {
   const lazy = {};
   XPCOMUtils.defineLazyPreferenceGetter(lazy, 'sidebarHeightThrottle', 'zen.view.sidebar-height-throttle', 500);
+  XPCOMUtils.defineLazyPreferenceGetter(lazy, 'disableInitialUrlBarFocus', 'zen.urlbar.disable-initial-focus', false);
   var ZenStartup = {
     init() {
       this.logHeader();
@@ -41,12 +42,7 @@
         gZenVerticalTabsManager.init();
         gZenCompactModeManager.init();
 
-        XPCOMUtils.defineLazyPreferenceGetter(
-          this,
-          'contentElementSeparation',
-          'zen.theme.content-element-separation',
-          0
-        );
+        XPCOMUtils.defineLazyPreferenceGetter(this, 'contentElementSeparation', 'zen.theme.content-element-separation', 0);
 
         document.l10n.setAttributes(document.getElementById('tabs-newtab-button'), 'tabs-toolbar-new-tab');
 
@@ -75,7 +71,7 @@
       const toolbarRect = toolbarItems.getBoundingClientRect();
       let height = toolbarRect.height;
       // -5 for the controls padding
-      let totalHeight = toolbarRect.height - (this.contentElementSeparation * 2) - 5;
+      let totalHeight = toolbarRect.height - this.contentElementSeparation * 2 - 5;
       // remove the height from other elements that aren't hidden
       const otherElements = document.querySelectorAll('#tabbrowser-tabs > *:not([hidden="true"])');
       for (let tab of otherElements) {
@@ -137,8 +133,10 @@
     },
 
     _initSearchBar() {
-      // Only focus the url bar
-      gURLBar.focus();
+      // Check if focus should stay on page or switch to url bar
+      if (!lazy.disableInitialUrlBarFocus) {
+        gURLBar.focus();
+      }
 
       gURLBar._initCopyCutController();
       gURLBar._initPasteAndGo();

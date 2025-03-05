@@ -196,6 +196,9 @@ pref('browser.migrate.vivaldi.enabled', true);
 pref('browser.migrate.opera-gx.enabled', true);
 pref('browser.migrate.opera.enabled', true);
 
+// Zen Urlbar
+pref('zen.urlbar.disable-initial-focus', false);
+
 // DNS
 // pref('network.trr.mode', 5);
 
